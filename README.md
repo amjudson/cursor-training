@@ -1,2 +1,1 @@
 # cursor-training
-# cursor-training
