@@ -23,10 +23,7 @@ export async function POST(request: Request) {
       data: { name, key },
     });
     return NextResponse.json(apiKey);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 400 });
-    }
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 } 

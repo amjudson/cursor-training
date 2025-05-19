@@ -15,7 +15,7 @@ export async function DELETE(
   try {
     await prisma.apiKey.delete({ where: { id: params.id } });
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 }
@@ -32,10 +32,7 @@ export async function PATCH(
       data: { name },
     });
     return NextResponse.json(apiKey);
-  } catch (error) {
-    if (error instanceof z.ZodError) {
-      return NextResponse.json({ error: error.errors }, { status: 400 });
-    }
+  } catch {
     return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 } 
