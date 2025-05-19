@@ -1,22 +1,37 @@
-import { NextResponse } from 'next/server';
-import { prisma } from '../../../lib/db';
+import { NextResponse } from "next/server";
+import { PrismaClient } from "@prisma/client";
+import { z } from "zod";
+
+const prisma = new PrismaClient();
+
+const updateKeySchema = z.object({
+  name: z.string().min(1).max(100),
+});
 
 export async function DELETE(
+  { params }: { params: { id: string } }
+) {
+  try {
+    await prisma.apiKey.delete({ where: { id: params.id } });
+    return NextResponse.json({ success: true });
+  } catch {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
+  }
+}
+
+export async function PATCH(
   request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
-    const { id } = params;
-
-    await prisma.apiKey.delete({
-      where: { id },
+    const body = await request.json();
+    const { name } = updateKeySchema.parse(body);
+    const apiKey = await prisma.apiKey.update({
+      where: { id: params.id },
+      data: { name },
     });
-
-    return NextResponse.json({ success: true });
-  } catch (error) {
-    return NextResponse.json(
-      { error: 'Internal Server Error' },
-      { status: 500 }
-    );
+    return NextResponse.json(apiKey);
+  } catch {
+    return NextResponse.json({ error: "Internal Server Error" }, { status: 500 });
   }
 } 
