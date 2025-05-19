@@ -20,12 +20,12 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         onToggle={() => setSidebarCollapsed((c) => !c)}
       />
       <main
-        className={`flex-1 flex flex-col transition-all duration-200 ${sidebarCollapsed ? "ml-20" : "ml-64"}`}
+        className={`flex-1 flex flex-col transition-all duration-200 ${sidebarCollapsed ? "ml-8" : "ml-24"}`}
       >
-        <header className="px-8 py-6 border-b border-[#23272F]">
-          <h1 className="text-2xl font-bold tracking-tight">Dashboard</h1>
+        <header className="px-1 py-1 border-b border-[#23272F]">
+          <h1 className="text-base font-bold tracking-tight">Dashboard</h1>
         </header>
-        <section className="flex-1 px-8 py-6">{children}</section>
+        <section className="flex-1 px-1 py-1">{children}</section>
       </main>
     </div>
   );

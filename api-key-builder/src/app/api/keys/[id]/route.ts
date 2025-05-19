@@ -9,7 +9,6 @@ const updateKeySchema = z.object({
 });
 
 export async function DELETE(
-  request: Request,
   { params }: { params: { id: string } }
 ) {
   try {
