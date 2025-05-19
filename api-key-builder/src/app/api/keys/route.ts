@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { prisma } from '../../../lib/db';
+import { prisma } from '../../lib/db';
 import { z } from 'zod';
 import crypto from 'crypto';
 
@@ -24,11 +24,12 @@ export async function POST(request: Request) {
 
     return NextResponse.json(apiKey);
   } catch (error) {
+    console.error('Error creating API key:', error);
     if (error instanceof z.ZodError) {
       return NextResponse.json({ error: error.errors }, { status: 400 });
     }
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Internal Server Error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
@@ -44,8 +45,9 @@ export async function GET() {
 
     return NextResponse.json(apiKeys);
   } catch (error) {
+    console.error('Error fetching API keys:', error);
     return NextResponse.json(
-      { error: 'Internal Server Error' },
+      { error: 'Internal Server Error', details: error instanceof Error ? error.message : 'Unknown error' },
       { status: 500 }
     );
   }
