@@ -1,42 +1,30 @@
-import { Metadata } from "next";
-import { DashboardHeader } from "./components/DashboardHeader";
+'use client';
 
-export const metadata: Metadata = {
-  title: "API Key Management",
-  description: "Manage your API keys",
-};
+import { useState } from 'react';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { DashboardHeader } from './components/DashboardHeader';
+import { ApiKeysTable } from './components/ApiKeysTable';
+import { CreateKeyModal } from './components/CreateKeyModal';
+
+// Create a client
+const queryClient = new QueryClient();
 
 export default function DashboardPage() {
-  return (
-    <div className="container mx-auto py-8">
-      <DashboardHeader />
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
 
-      <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
-        <div className="p-6">
-          <div className="overflow-x-auto">
-            <table className="w-full">
-              <thead>
-                <tr className="border-b dark:border-gray-700">
-                  <th className="text-left py-3 px-4">Name</th>
-                  <th className="text-left py-3 px-4">Key</th>
-                  <th className="text-left py-3 px-4">Created</th>
-                  <th className="text-left py-3 px-4">Last Used</th>
-                  <th className="text-left py-3 px-4">Actions</th>
-                </tr>
-              </thead>
-              <tbody>
-                <tr className="border-b dark:border-gray-700">
-                  <td className="py-3 px-4">No API keys found</td>
-                  <td className="py-3 px-4">-</td>
-                  <td className="py-3 px-4">-</td>
-                  <td className="py-3 px-4">-</td>
-                  <td className="py-3 px-4">-</td>
-                </tr>
-              </tbody>
-            </table>
-          </div>
-        </div>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <div className="container mx-auto py-8">
+        <DashboardHeader onCreateClick={() => setIsCreateModalOpen(true)} />
+        <ApiKeysTable />
+        <CreateKeyModal
+          isOpen={isCreateModalOpen}
+          onClose={() => setIsCreateModalOpen(false)}
+          onSuccess={() => {
+            queryClient.invalidateQueries({ queryKey: ['apiKeys'] });
+          }}
+        />
       </div>
-    </div>
+    </QueryClientProvider>
   );
 } 
