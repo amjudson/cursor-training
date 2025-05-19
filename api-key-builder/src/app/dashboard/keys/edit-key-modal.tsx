@@ -7,39 +7,42 @@ import { z } from "zod";
 import { useState } from "react";
 import { useToast } from "@/components/toast-provider";
 
-const createKeySchema = z.object({
+const editKeySchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name is too long"),
 });
-type CreateKeyForm = z.infer<typeof createKeySchema>;
+type EditKeyForm = z.infer<typeof editKeySchema>;
 
-interface CreateKeyModalProps {
+interface EditKeyModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   onSuccess: () => void;
+  keyId: string;
+  initialName: string;
 }
 
-export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModalProps) {
+export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName }: EditKeyModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<CreateKeyForm>({
-    resolver: zodResolver(createKeySchema),
+  const { register, handleSubmit, formState: { errors }, reset } = useForm<EditKeyForm>({
+    resolver: zodResolver(editKeySchema),
+    defaultValues: { name: initialName },
   });
   const toast = useToast();
 
-  async function onSubmit(data: CreateKeyForm) {
+  async function onSubmit(data: EditKeyForm) {
     setIsLoading(true);
     try {
-      const res = await fetch("/api/keys", {
-        method: "POST",
+      const res = await fetch(`/api/keys/${keyId}`, {
+        method: "PATCH",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to create API key");
+      if (!res.ok) throw new Error("Failed to update API key");
       reset();
       onSuccess();
       onOpenChange(false);
-      toast.show({ title: "API Key created", variant: "success" });
+      toast.show({ title: "API Key updated", variant: "success" });
     } catch (err) {
-      toast.show({ title: "Failed to create API key", variant: "error" });
+      toast.show({ title: "Failed to update API key", variant: "error" });
     } finally {
       setIsLoading(false);
     }
@@ -50,7 +53,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
       <Dialog.Portal>
         <Dialog.Overlay className="fixed inset-0 bg-black/60 z-50" />
         <Dialog.Content className="fixed z-50 top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-[#23272F] p-8 rounded-lg shadow-lg w-full max-w-md">
-          <Dialog.Title className="text-xl font-bold mb-4 text-white">Create New API Key</Dialog.Title>
+          <Dialog.Title className="text-xl font-bold mb-4 text-white">Edit API Key</Dialog.Title>
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-1 text-gray-200">
@@ -82,7 +85,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
                 disabled={isLoading}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50"
               >
-                {isLoading ? "Creating..." : "Create Key"}
+                {isLoading ? "Saving..." : "Save Changes"}
               </button>
             </div>
           </form>

@@ -4,6 +4,8 @@ import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Eye, EyeOff, Copy, Pencil, Trash2, KeyRound } from "lucide-react";
 import { CreateKeyModal } from "./create-key-modal";
+import { EditKeyModal } from "./edit-key-modal";
+import { useToast } from "@/components/toast-provider";
 
 interface ApiKey {
   id: string;
@@ -22,7 +24,9 @@ export function ApiKeysTable() {
   const [copiedId, setCopiedId] = useState<string | null>(null);
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isCreateOpen, setIsCreateOpen] = useState(false);
+  const [editKey, setEditKey] = useState<{ id: string; name: string } | null>(null);
   const queryClient = useQueryClient();
+  const toast = useToast();
 
   const { data: apiKeys, isLoading, isError } = useQuery<ApiKey[]>({
     queryKey: ["apiKeys"],
@@ -41,6 +45,10 @@ export function ApiKeysTable() {
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["apiKeys"] });
       setDeleteId(null);
+      toast.show({ title: "API Key deleted", variant: "success" });
+    },
+    onError: () => {
+      toast.show({ title: "Failed to delete API key", variant: "error" });
     },
   });
 
@@ -113,7 +121,11 @@ export function ApiKeysTable() {
                     </td>
                     <td className="py-3 px-6">
                       <div className="flex gap-3">
-                        <button className="text-gray-400 hover:text-blue-400" title="Edit">
+                        <button
+                          className="text-gray-400 hover:text-blue-400"
+                          title="Edit"
+                          onClick={() => setEditKey({ id: k.id, name: k.name })}
+                        >
                           <Pencil size={16} />
                         </button>
                         <button
@@ -138,6 +150,18 @@ export function ApiKeysTable() {
         onOpenChange={setIsCreateOpen}
         onSuccess={() => queryClient.invalidateQueries({ queryKey: ["apiKeys"] })}
       />
+      {/* Edit Key Modal */}
+      {editKey && (
+        <EditKeyModal
+          open={!!editKey}
+          onOpenChange={(open) => {
+            if (!open) setEditKey(null);
+          }}
+          onSuccess={() => queryClient.invalidateQueries({ queryKey: ["apiKeys"] })}
+          keyId={editKey.id}
+          initialName={editKey.name}
+        />
+      )}
       {/* Delete Modal */}
       {deleteId && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">

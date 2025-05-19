@@ -3,18 +3,20 @@
 import { ApiKeysTable } from "./api-keys-table";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useState } from "react";
+import { ToastProvider } from "@/components/toast-provider";
 
 export default function ApiKeysPage() {
   const [queryClient] = useState(() => new QueryClient());
 
   return (
     <QueryClientProvider client={queryClient}>
-      <div className="max-w-4xl mx-auto mt-8">
-        <h2 className="text-xl font-semibold mb-4">API Keys</h2>
-        <div className="bg-[#181C23] border border-[#23272F] rounded-lg p-8 text-gray-300">
-          <ApiKeysTable />
+      <ToastProvider>
+        <div className="flex min-h-screen items-center justify-center">
+          <div className="w-full max-w-7xl mx-auto px-0 sm:px-4 md:px-8 lg:px-12 xl:px-20">
+            <ApiKeysTable />
+          </div>
         </div>
-      </div>
+      </ToastProvider>
     </QueryClientProvider>
   );
 } 
