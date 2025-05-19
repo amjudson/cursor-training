@@ -56,6 +56,7 @@ export function ApiKeysTable() {
     navigator.clipboard.writeText(key);
     setCopiedId(id);
     setTimeout(() => setCopiedId(null), 1200);
+    toast.show({ title: "Copied API Key to clipboard", variant: "success" });
   }
 
   return (
