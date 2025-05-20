@@ -1,14 +1,7 @@
 "use client";
 
 import { Sidebar } from "@/components/sidebar";
-import { LayoutDashboard, KeyRound, Settings2 } from "lucide-react";
 import { useState } from "react";
-
-const navItems = [
-  { label: "Overview", href: "/dashboard", icon: <LayoutDashboard size={18} /> },
-  { label: "API Keys", href: "/dashboard/keys", icon: <KeyRound size={18} /> },
-  { label: "Settings", href: "/dashboard/settings", icon: <Settings2 size={18} /> },
-];
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
