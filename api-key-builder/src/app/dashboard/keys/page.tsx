@@ -11,7 +11,7 @@ export default function ApiKeysPage() {
   return (
     <QueryClientProvider client={queryClient}>
       <ToastProvider>
-        <div className="flex min-h-screen items-center">
+        <div className="flex min-h-screen">
           <div className="w-full max-w-7xl px-4">
             <ApiKeysTable />
           </div>
