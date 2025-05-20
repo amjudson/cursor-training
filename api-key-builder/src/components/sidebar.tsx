@@ -44,10 +44,11 @@ const navItems: NavItem[] = [
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const pathname = usePathname();
   return (
-    <aside className={`h-screen bg-[#1A2233] border-r border-[#23272F] rounded-r-2xl flex flex-col pt-1 pb-6 shadow-lg transition-all duration-200 ${collapsed ? "w-20 items-center px-0" : "w-64 px-2"}`}>
+    <aside data-testid="sidebar-container" className={`h-screen bg-[#1A2233] border-r border-[#23272F] rounded-r-2xl flex flex-col pt-1 pb-6 shadow-lg transition-all duration-200 ${collapsed ? "w-20 items-center px-0" : "w-64 px-2"}`}>
       {/* Toggle button row at the very top, right justified */}
       <div className="flex items-center justify-end mb-0 w-full" style={{ minHeight: 0 }}>
         <button
+          data-testid="sidebar-toggle-button"
           className="text-gray-400 hover:text-white p-3 rounded transition-colors z-10"
           onClick={onToggle}
           aria-label={collapsed ? "Expand sidebar" : "Collapse sidebar"}
@@ -56,16 +57,17 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
         </button>
       </div>
       {/* Logo/title row */}
-      <div className={`flex items-center ${collapsed ? "justify-center" : "gap-2"} mb-4 ${collapsed ? "px-0" : "px-2"}`}>
+      <div data-testid="sidebar-logo" className={`flex items-center ${collapsed ? "justify-center" : "gap-2"} mb-4 ${collapsed ? "px-0" : "px-2"}`}>
         <Image src="/logo-aplus.jpg" alt="A Plus Logo" width={36} height={36} className="rounded-full" />
         <span className={`text-2xl font-bold tracking-tight text-white transition-all duration-200 ${collapsed ? "opacity-0 w-0" : "opacity-100 w-auto"}`}>A Plus</span>
       </div>
-      <nav className="flex-1 w-full">
+      <nav data-testid="sidebar-navigation" className="flex-1 w-full">
         <ul className="space-y-1">
           {navItems.map((item) => (
             <li key={item.href}>
               {item.external ? (
                 <a
+                  data-testid={`sidebar-link-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                   href={item.href}
                   target="_blank"
                   rel="noopener noreferrer"
@@ -77,6 +79,7 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
                 </a>
               ) : (
                 <Link
+                  data-testid={`sidebar-link-${item.label.toLowerCase().replace(/\s+/g, '-')}`}
                   href={item.href}
                   className={`flex items-center ${collapsed ? "justify-center px-0" : "gap-3 px-3"} py-2 rounded-lg transition-colors text-sm font-medium
                     ${pathname === item.href ? "bg-[#23272F] text-white" : "text-gray-400 hover:bg-[#22262E] hover:text-white"}

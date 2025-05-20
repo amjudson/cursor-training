@@ -42,14 +42,14 @@ export function ApiKeysTable() {
   });
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return <div data-testid="api-keys-loading">Loading...</div>;
   }
 
   return (
-    <div className="bg-white dark:bg-gray-800 rounded-lg shadow">
+    <div data-testid="api-keys-table-container" className="bg-white dark:bg-gray-800 rounded-lg shadow">
       <div className="p-6">
         <div className="overflow-x-auto">
-          <table className="w-full">
+          <table data-testid="api-keys-table" className="w-full">
             <thead>
               <tr className="border-b dark:border-gray-700">
                 <th className="text-left py-3 px-4">Name</th>
@@ -68,7 +68,7 @@ export function ApiKeysTable() {
                 </tr>
               ) : (
                 apiKeys?.map((key) => (
-                  <tr key={key.id} className="border-b dark:border-gray-700">
+                  <tr key={key.id} data-testid={`api-key-row-${key.id}`} className="border-b dark:border-gray-700">
                     <td className="py-3 px-4">{key.name}</td>
                     <td className="py-3 px-4">
                       <div className="flex items-center gap-2">
@@ -76,6 +76,7 @@ export function ApiKeysTable() {
                           {showKey === key.id ? key.key : '••••••••••••••••'}
                         </code>
                         <button
+                          data-testid={`api-key-toggle-${key.id}`}
                           onClick={() => setShowKey(showKey === key.id ? null : key.id)}
                           className="text-sm text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
                         >
@@ -93,6 +94,7 @@ export function ApiKeysTable() {
                     </td>
                     <td className="py-3 px-4">
                       <button
+                        data-testid={`api-key-delete-${key.id}`}
                         onClick={() => deleteMutation.mutate(key.id)}
                         className="text-red-600 hover:text-red-700 dark:text-red-400 dark:hover:text-red-300"
                         disabled={deleteMutation.isPending}

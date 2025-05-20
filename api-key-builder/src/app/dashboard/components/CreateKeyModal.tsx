@@ -52,12 +52,12 @@ export function CreateKeyModal({ isOpen, onClose, onSuccess }: CreateKeyModalPro
   return (
     <Dialog.Root open={isOpen} onOpenChange={onClose}>
       <Dialog.Portal>
-        <Dialog.Overlay className="fixed inset-0 bg-black/50" />
-        <Dialog.Content className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-          <Dialog.Title className="text-xl font-bold mb-4">
+        <Dialog.Overlay data-testid="create-key-modal-overlay" className="fixed inset-0 bg-black/50" />
+        <Dialog.Content data-testid="create-key-modal-content" className="fixed top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+          <Dialog.Title data-testid="create-key-modal-title" className="text-xl font-bold mb-4">
             Create New API Key
           </Dialog.Title>
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
+          <form data-testid="create-key-form" onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             <div>
               <label htmlFor="name" className="block text-sm font-medium mb-1">
                 Key Name
@@ -66,16 +66,18 @@ export function CreateKeyModal({ isOpen, onClose, onSuccess }: CreateKeyModalPro
                 {...register('name')}
                 type="text"
                 id="name"
+                data-testid="create-key-name-input"
                 className="w-full px-3 py-2 border rounded-md dark:bg-gray-700 dark:border-gray-600"
                 placeholder="Enter a name for your API key"
               />
               {errors.name && (
-                <p className="mt-1 text-sm text-red-500">{errors.name.message}</p>
+                <p data-testid="create-key-name-error" className="mt-1 text-sm text-red-500">{errors.name.message}</p>
               )}
             </div>
             <div className="flex justify-end gap-3 mt-6">
               <button
                 type="button"
+                data-testid="create-key-cancel-button"
                 onClick={onClose}
                 className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-md"
               >
@@ -83,6 +85,7 @@ export function CreateKeyModal({ isOpen, onClose, onSuccess }: CreateKeyModalPro
               </button>
               <button
                 type="submit"
+                data-testid="create-key-submit-button"
                 disabled={isLoading}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50"
               >
