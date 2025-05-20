@@ -22,11 +22,16 @@ interface EditKeyModalProps {
 
 export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName }: EditKeyModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<EditKeyForm>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<EditKeyForm>({
     resolver: zodResolver(editKeySchema),
     defaultValues: { name: initialName },
   });
   const toast = useToast();
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\s+/g, '-');
+    setValue('name', value);
+  };
 
   async function onSubmit(data: EditKeyForm) {
     setIsLoading(true);
@@ -36,12 +41,14 @@ export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to update API key");
+      if (!res.ok) {
+        throw new Error("Failed to update API key");
+      }
       reset();
       onSuccess();
       onOpenChange(false);
       toast.show({ title: "API Key updated", variant: "success" });
-    } catch (err) {
+    } catch {
       toast.show({ title: "Failed to update API key", variant: "error" });
     } finally {
       setIsLoading(false);
@@ -63,9 +70,11 @@ export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName
                 {...register("name")}
                 type="text"
                 id="name"
+                data-testid="edit-key-name-input"
                 className="w-full px-3 py-2 border rounded-md bg-[#181C23] border-[#23272F] text-white"
                 placeholder="Enter a name for your API key"
                 disabled={isLoading}
+                onChange={handleNameChange}
               />
               {errors.name && (
                 <p className="mt-1 text-sm text-red-400">{errors.name.message}</p>

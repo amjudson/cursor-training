@@ -20,10 +20,15 @@ interface CreateKeyModalProps {
 
 export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModalProps) {
   const [isLoading, setIsLoading] = useState(false);
-  const { register, handleSubmit, formState: { errors }, reset } = useForm<CreateKeyForm>({
+  const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<CreateKeyForm>({
     resolver: zodResolver(createKeySchema),
   });
   const toast = useToast();
+
+  const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value.replace(/\s+/g, '-');
+    setValue('name', value);
+  };
 
   async function onSubmit(data: CreateKeyForm) {
     setIsLoading(true);
@@ -33,12 +38,14 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),
       });
-      if (!res.ok) throw new Error("Failed to create API key");
+      if (!res.ok) {
+        throw new Error("Failed to create API key");
+      }
       reset();
       onSuccess();
       onOpenChange(false);
       toast.show({ title: "API Key created", variant: "success" });
-    } catch (err) {
+    } catch {
       toast.show({ title: "Failed to create API key", variant: "error" });
     } finally {
       setIsLoading(false);
@@ -60,9 +67,11 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
                 {...register("name")}
                 type="text"
                 id="name"
+                data-testid="create-key-name-input"
                 className="w-full px-3 py-2 border rounded-md bg-[#181C23] border-[#23272F] text-white"
                 placeholder="Enter a name for your API key"
                 disabled={isLoading}
+                onChange={handleNameChange}
               />
               {errors.name && (
                 <p className="mt-1 text-sm text-red-400">{errors.name.message}</p>
