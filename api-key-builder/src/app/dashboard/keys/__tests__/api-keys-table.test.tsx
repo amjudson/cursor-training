@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor, act } from '@testing-library/react';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom';
 import { ApiKeysTable } from '../api-keys-table';
 import { QueryClient, QueryClientProvider, useQuery, useMutation } from '@tanstack/react-query';
@@ -9,6 +9,17 @@ interface ApiKey {
   name: string;
   key: string;
   createdAt: string;
+}
+
+interface ModalProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+  onSuccess: () => void;
+}
+
+interface EditModalProps extends ModalProps {
+  keyId: string;
+  initialName: string;
 }
 
 // Mock react-query hooks
@@ -35,23 +46,6 @@ Object.assign(navigator, {
   },
 });
 
-const mockApiKeys = [
-  {
-    id: '1',
-    name: 'Test Key 1',
-    type: 'dev',
-    usage: 0,
-    key: 'test-key-123456789',
-  },
-  {
-    id: '2',
-    name: 'Test Key 2',
-    type: 'prod',
-    usage: 5,
-    key: 'test-key-987654321',
-  },
-];
-
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -60,28 +54,22 @@ const queryClient = new QueryClient({
   },
 });
 
-const renderWithProviders = (component: React.ReactNode) => {
-  return render(
-    <QueryClientProvider client={queryClient}>
-      <ToastProvider>
-        {component}
-      </ToastProvider>
-    </QueryClientProvider>
-  );
-};
-
 // Mock CreateKeyModal and EditKeyModal to simulate successful mutation
 jest.mock('../create-key-modal', () => ({
-  CreateKeyModal: ({ open, onOpenChange, onSuccess }: any) => {
+  CreateKeyModal: ({ open, onOpenChange, onSuccess }: ModalProps) => {
     if (open && onSuccess) {
       setTimeout(() => {
         onSuccess();
-        onOpenChange && onOpenChange(false);
+        (onOpenChange ?? (() => {}))(false);
       }, 0);
     }
     return open ? (
       <div role="dialog">
-        <form onSubmit={e => { e.preventDefault(); onSuccess && onSuccess(); onOpenChange && onOpenChange(false); }}>
+        <form onSubmit={e => { 
+          e.preventDefault(); 
+          (onSuccess ?? (() => {}))();
+          (onOpenChange ?? (() => {}))(false);
+        }}>
           <label htmlFor="name">Key Name</label>
           <input id="name" name="name" />
           <button type="submit">Create Key</button>
@@ -92,16 +80,20 @@ jest.mock('../create-key-modal', () => ({
 }));
 
 jest.mock('../edit-key-modal', () => ({
-  EditKeyModal: ({ open, onOpenChange, onSuccess, keyId, initialName }: any) => {
+  EditKeyModal: ({ open, onOpenChange, onSuccess, initialName }: EditModalProps) => {
     if (open && onSuccess) {
       setTimeout(() => {
         onSuccess();
-        onOpenChange && onOpenChange(false);
+        (onOpenChange ?? (() => {}))(false);
       }, 0);
     }
     return open ? (
       <div role="dialog">
-        <form onSubmit={e => { e.preventDefault(); onSuccess && onSuccess(); onOpenChange && onOpenChange(false); }}>
+        <form onSubmit={e => { 
+          e.preventDefault(); 
+          (onSuccess ?? (() => {}))();
+          (onOpenChange ?? (() => {}))(false);
+        }}>
           <label htmlFor="name">Key Name</label>
           <input id="name" name="name" defaultValue={initialName} />
           <button type="submit">Save Changes</button>
@@ -112,10 +104,8 @@ jest.mock('../edit-key-modal', () => ({
 }));
 
 describe('ApiKeysTable', () => {
-  let queryClient: QueryClient;
-
   beforeEach(() => {
-    queryClient = new QueryClient();
+    queryClient.clear();
     jest.clearAllMocks();
   });
 
