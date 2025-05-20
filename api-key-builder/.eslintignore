@@ -1,0 +1,24 @@
+# Non-code directories
+.github/**
+.next/**
+coverage/**
+node_modules/**
+public/**
+sandbox/**
+playwright-report/**
+
+# generated files
+src/generated/**
+
+# IDE directories (not committed)
+.vscode/**
+.idea/**
+
+# files which should not be edited
+next-env.d.ts
+
+# mock api builds
+playwright/mock-apis/**/build/**
+
+# docker output directory
+docker-output/**
