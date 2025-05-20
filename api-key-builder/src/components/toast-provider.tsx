@@ -28,12 +28,12 @@ export function ToastProvider({ children }: { children: ReactNode }) {
           open={open}
           onOpenChange={setOpen}
           className={`fixed bottom-6 right-6 z-[100] w-[320px] rounded-lg shadow-lg px-6 py-4 flex items-center gap-3
-            ${toast.variant === "error" ? "bg-red-700 text-white" : "bg-green-300 text-black"}`}
+            ${toast.variant === "error" ? "bg-red-700 text-white" : "bg-green-800 text-white"}`}
         >
-          {toast.variant === "success" && <CheckCircle className="w-6 h-6 text-green-800" />}
+          {toast.variant === "success" && <CheckCircle className="w-6 h-6 text-green-200" />}
           <div>
-            <Toast.Title className="font-semibold text-base">{toast.title}</Toast.Title>
-            {toast.description && <Toast.Description className="text-sm text-gray-800">{toast.description}</Toast.Description>}
+            <Toast.Title className="font-semibold text-base text-white">{toast.title}</Toast.Title>
+            {toast.description && <Toast.Description className="text-sm text-gray-200">{toast.description}</Toast.Description>}
           </div>
         </Toast.Root>
         <Toast.Viewport />
