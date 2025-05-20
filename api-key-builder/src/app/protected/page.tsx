@@ -15,7 +15,7 @@ export default function ProtectedPage() {
         if (!response.ok) {
           router.push("/playground");
         }
-      } catch (error) {
+      } catch {
         router.push("/playground");
       }
     };

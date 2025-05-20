@@ -6,7 +6,7 @@ export async function GET() {
     // or if their API key is still valid
     // For this example, we'll just return success
     return NextResponse.json({ success: true });
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }

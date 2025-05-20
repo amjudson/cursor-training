@@ -28,7 +28,7 @@ export async function POST(request: Request) {
       { error: "Invalid API key" },
       { status: 401 }
     );
-  } catch (error) {
+  } catch {
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
