@@ -27,7 +27,7 @@ export default function PlaygroundPage() {
           description: "Valid API key, /protected can be accessed",
           variant: "success",
         });
-        router.push("/protected");
+        router.push("/dashboard/protected");
       } else {
         show({
           title: "Error",
