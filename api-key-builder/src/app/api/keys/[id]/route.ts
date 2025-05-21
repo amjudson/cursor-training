@@ -9,8 +9,14 @@ const updateKeySchema = z.object({
 });
 
 export async function DELETE(
+  request: Request,
   { params }: { params: { id: string } }
 ) {
+  // if (!params.id) {
+  //   return NextResponse.json({ error: "Invalid ID" }, { status: 400 });
+  // }
+
+  console.log('Request', request);
   try {
     await prisma.apiKey.delete({ where: { id: params.id } });
     return NextResponse.json({ success: true });
