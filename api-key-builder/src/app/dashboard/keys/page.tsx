@@ -1,7 +1,7 @@
-"use client";
+'use client'
 
-import { ApiKeysTable } from "./api-keys-table";
-import { ToastProvider } from "@/components/toast-provider";
+import { ApiKeysTable } from './api-keys-table'
+import { ToastProvider } from '@/components/toast-provider'
 
 export default function ApiKeysPage() {
   return (
@@ -12,5 +12,5 @@ export default function ApiKeysPage() {
         </div>
       </div>
     </ToastProvider>
-  );
+  )
 } 

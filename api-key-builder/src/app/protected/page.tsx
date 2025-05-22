@@ -1,27 +1,27 @@
-"use client";
+'use client'
 
-import { useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
 
 export default function ProtectedPage() {
-  const router = useRouter();
+  const router = useRouter()
 
   useEffect(() => {
     // Here you can add additional checks if needed
     // For example, checking if the API key is still valid
     const checkAccess = async () => {
       try {
-        const response = await fetch("/api/check-access");
+        const response = await fetch('/api/check-access')
         if (!response.ok) {
-          router.push("/playground");
+          router.push('/playground')
         }
       } catch {
-        router.push("/playground");
+        router.push('/playground')
       }
-    };
+    }
 
-    checkAccess();
-  }, [router]);
+    checkAccess()
+  }, [router])
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#18181b]">
@@ -37,5 +37,5 @@ export default function ProtectedPage() {
         {/* Add your protected content here */}
       </div>
     </div>
-  );
+  )
 } 

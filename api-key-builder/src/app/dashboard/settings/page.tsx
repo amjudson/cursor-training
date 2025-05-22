@@ -6,5 +6,5 @@ export default function SettingsPage() {
         <p className="text-center">Settings UI coming soon.</p>
       </div>
     </div>
-  );
+  )
 } 

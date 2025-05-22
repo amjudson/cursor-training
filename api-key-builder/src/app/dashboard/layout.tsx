@@ -1,10 +1,10 @@
-"use client";
+'use client'
 
-import { Sidebar } from "@/components/sidebar";
-import { useState } from "react";
+import { Sidebar } from '@/components/sidebar'
+import { useState } from 'react'
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   return (
     <div data-testid="dashboard-layout-container" className="flex min-h-screen bg-[#15181E] text-white">
       <Sidebar collapsed={sidebarCollapsed} onToggle={() => setSidebarCollapsed((c) => !c)} />
@@ -15,5 +15,5 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <section data-testid="dashboard-layout-content" className="flex-1 px-1 py-1">{children}</section>
       </main>
     </div>
-  );
+  )
 } 

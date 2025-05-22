@@ -1,48 +1,48 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { useToast } from "@/components/toast-provider";
+import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { useToast } from '@/components/toast-provider'
 
 export default function PlaygroundPage() {
-  const [apiKey, setApiKey] = useState("");
-  const router = useRouter();
-  const { show } = useToast();
+  const [apiKey, setApiKey] = useState('')
+  const router = useRouter()
+  const { show } = useToast()
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
+    e.preventDefault()
     
     try {
-      const response = await fetch("/api/validate-key", {
-        method: "POST",
+      const response = await fetch('/api/validate-key', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({ apiKey }),
-      });
+      })
 
       if (response.ok) {
         show({
-          title: "Success",
-          description: "Valid API key, /protected can be accessed",
-          variant: "success",
-        });
-        router.push("/protected");
+          title: 'Success',
+          description: 'Valid API key, /protected can be accessed',
+          variant: 'success',
+        })
+        router.push('/protected')
       } else {
         show({
-          title: "Error",
-          description: "Invalid API Key",
-          variant: "error",
-        });
+          title: 'Error',
+          description: 'Invalid API Key',
+          variant: 'error',
+        })
       }
     } catch {
       show({
-        title: "Error",
-        description: "Something went wrong",
-        variant: "error",
-      });
+        title: 'Error',
+        description: 'Something went wrong',
+        variant: 'error',
+      })
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#18181b]">
@@ -85,5 +85,5 @@ export default function PlaygroundPage() {
         </form>
       </div>
     </div>
-  );
+  )
 } 

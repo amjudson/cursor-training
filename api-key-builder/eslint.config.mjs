@@ -9,13 +9,16 @@ const compat = new FlatCompat({
   baseDirectory: __dirname,
 });
 
-const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript"),
-  ...compat.config({
-    "ignorePatterns": [
-      "src/generated/**",
-    ]
-  }),
+const config = [
+  ...compat.extends("next/core-web-vitals"),
+  {
+    ignores: ['.next/**'],
+    files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
+    rules: {
+      "quotes": ["error", "single"],
+      "semi": ["error", "never"]
+    }
+  }
 ];
 
-export default eslintConfig;
+export default config;

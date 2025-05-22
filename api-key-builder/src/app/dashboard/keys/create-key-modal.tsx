@@ -1,22 +1,22 @@
-"use client";
+'use client'
 
-import * as Dialog from "@radix-ui/react-dialog";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useState } from "react";
-import { useToast } from "@/components/toast-provider";
-import { useCreateApiKeyMutation } from "@/lib/store/api/apiSlice";
-import crypto from "crypto";
+import * as Dialog from '@radix-ui/react-dialog'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useState } from 'react'
+import { useToast } from '@/components/toast-provider'
+import { useCreateApiKeyMutation } from '@/lib/store/api/apiSlice'
+import crypto from 'crypto'
 
 const createKeySchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name is too long"),
+  name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
   key: z.string().default(''),
   usages: z.number().default(0),
   createdAt: z.date().default(new Date()),
   lastUsed: z.date().default(new Date()),
   isActive: z.boolean().default(true),
-});
+})
 
 type CreateKeyForm = z.infer<typeof createKeySchema>;
 
@@ -27,36 +27,36 @@ interface CreateKeyModalProps {
 }
 
 export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModalProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<CreateKeyForm>({
     resolver: zodResolver(createKeySchema),
-  });
-  const toast = useToast();
-  const [createApiKey] = useCreateApiKeyMutation();
+  })
+  const toast = useToast()
+  const [createApiKey] = useCreateApiKeyMutation()
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\s+/g, '-');
-    setValue('name', value);
-  };
+    const value = e.target.value.replace(/\s+/g, '-')
+    setValue('name', value)
+  }
 
   async function onSubmit(data: CreateKeyForm) {
-    console.log("Submitting API key creation with data:", data);
-    setIsLoading(true);
-    data.key = `ak_${crypto.randomBytes(32).toString("hex")}`
-    data.createdAt = new Date();
-    data.lastUsed = new Date();
-    data.usages = 0;
-    data.isActive = true;
+    console.log('Submitting API key creation with data:', data)
+    setIsLoading(true)
+    data.key = `ak_${crypto.randomBytes(32).toString('hex')}`
+    data.createdAt = new Date()
+    data.lastUsed = new Date()
+    data.usages = 0
+    data.isActive = true
     try {
-      await createApiKey(data).unwrap();
-      reset();
-      onSuccess();
-      onOpenChange(false);
-      toast.show({ title: "API Key created", variant: "success" });
+      await createApiKey(data).unwrap()
+      reset()
+      onSuccess()
+      onOpenChange(false)
+      toast.show({ title: 'API Key created', variant: 'success' })
     } catch {
-      toast.show({ title: "Failed to create API key", variant: "error" });
+      toast.show({ title: 'Failed to create API key', variant: 'error' })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
@@ -72,7 +72,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
                 Key Name
               </label>
               <input
-                {...register("name")}
+                {...register('name')}
                 type="text"
                 id="name"
                 data-testid="create-key-name-input"
@@ -99,12 +99,12 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
                 disabled={isLoading}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50 transition-colors"
               >
-                {isLoading ? "Creating..." : "Create Key"}
+                {isLoading ? 'Creating...' : 'Create Key'}
               </button>
             </div>
           </form>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  );
+  )
 } 
