@@ -7,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ApiKeyBuilder.Api.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialDBsetup : Migration
+    public partial class InitialDBBuild : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

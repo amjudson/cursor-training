@@ -96,6 +96,51 @@ public class ApiKeysController : ControllerBase
         return NoContent();
     }
 
+    // POST: api/ApiKeys/ValidateApiKey
+    [HttpPost("[action]")]
+    public async Task<ActionResult<ApiKeyValidationResponse>> ValidateApiKey([FromBody] ApiKeyValidationRequest request)
+    {
+        if (string.IsNullOrEmpty(request.Key))
+        {
+            return BadRequest(new ApiKeyValidationResponse 
+            { 
+                IsValid = false, 
+                Message = "API key cannot be empty" 
+            });
+        }
+
+        var apiKey = await context.ApiKeys.FirstOrDefaultAsync(k => k.Key == request.Key);
+
+        if (apiKey == null)
+        {
+            return NotFound(new ApiKeyValidationResponse 
+            { 
+                IsValid = false, 
+                Message = "API key not found" 
+            });
+        }
+
+        if (!apiKey.IsActive)
+        {
+            return Ok(new ApiKeyValidationResponse 
+            { 
+                IsValid = false, 
+                Message = "API key is inactive" 
+            });
+        }
+
+        // Increment usage count
+        apiKey.Usages++;
+        await context.SaveChangesAsync();
+
+        return Ok(new ApiKeyValidationResponse 
+        { 
+            IsValid = true, 
+            Message = "API key is valid",
+            ApiKey = apiKey
+        });
+    }
+
     private string GenerateRandomApiKey()
     {
         const string chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";

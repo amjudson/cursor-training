@@ -3,39 +3,35 @@
 import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/toast-provider'
+import { useValidateApiKeyMutation } from '@/lib/store/api/apiSlice'
 
 export default function PlaygroundPage() {
   const [apiKey, setApiKey] = useState('')
   const router = useRouter()
   const { show } = useToast()
+  const [validateApiKey] = useValidateApiKeyMutation()
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     
     try {
-      const response = await fetch('/api/validate-key', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ apiKey }),
-      })
+      const result = await validateApiKey({ key: apiKey }).unwrap()
 
-      if (response.ok) {
+      if (result.isValid) {
         show({
           title: 'Success',
-          description: 'Valid API key, /protected can be accessed',
+          description: result.message || 'Valid API key, /protected can be accessed',
           variant: 'success',
         })
-        router.push('/protected')
+        router.push('/dashboard/protected')
       } else {
         show({
           title: 'Error',
-          description: 'Invalid API Key',
+          description: result.message || 'Invalid API Key',
           variant: 'error',
         })
       }
-    } catch {
+    } catch (error) {
       show({
         title: 'Error',
         description: 'Something went wrong',

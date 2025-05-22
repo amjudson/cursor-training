@@ -12,7 +12,7 @@ const compat = new FlatCompat({
 const config = [
   ...compat.extends("next/core-web-vitals"),
   {
-    ignores: ['.next/**'],
+    ignores: ['.next/**', 'node_modules/**', '.idea/**'],
     files: ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"],
     rules: {
       "quotes": ["error", "single"],

@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace ApiKeyBuilder.Api.Migrations
 {
     [DbContext(typeof(ApiKeyBuilderContext))]
-    [Migration("20250522122335_InitialDBsetup")]
-    partial class InitialDBsetup
+    [Migration("20250522152527_InitialDBBuild")]
+    partial class InitialDBBuild
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
