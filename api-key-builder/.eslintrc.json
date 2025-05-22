@@ -1,0 +1,11 @@
+{
+  "extends": [
+    "next/core-web-vitals",
+    "next/typescript"
+  ],
+  "rules": {
+    "quotes": ["error", "single"],
+    "semi": ["error", "never"],
+    "comma-dangle": ["warn", "always-multiline"]
+  }
+}
