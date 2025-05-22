@@ -10,6 +10,12 @@ export interface ApiKey {
   isActive: boolean;
 }
 
+export interface ValidateApiKeyResponse {
+  isValid: boolean;
+  message: string;
+  apiKey: ApiKey | null;
+}
+
 const controllerName = 'ApiKeys'
 
 export const apiSlice = createApi({
@@ -54,6 +60,13 @@ export const apiSlice = createApi({
       }),
       invalidatesTags: ['ApiKey'],
     }),
+    validateApiKey: builder.mutation<ValidateApiKeyResponse, { key: string }>({
+      query: (body) => ({
+        url: `${controllerName}/ValidateApiKey`,
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
 })
 
@@ -63,4 +76,5 @@ export const {
   useCreateApiKeyMutation,
   useUpdateApiKeyMutation,
   useDeleteApiKeyMutation,
+  useValidateApiKeyMutation,
 } = apiSlice 
