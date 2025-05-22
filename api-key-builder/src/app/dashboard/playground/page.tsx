@@ -31,7 +31,7 @@ export default function PlaygroundPage() {
           variant: 'error',
         })
       }
-    } catch (error) {
+    } catch {
       show({
         title: 'Error',
         description: 'Something went wrong',
