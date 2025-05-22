@@ -5,7 +5,7 @@ import { Eye, EyeOff, Copy, Pencil, Trash2, KeyRound } from "lucide-react";
 import { CreateKeyModal } from "./create-key-modal";
 import { EditKeyModal } from "./edit-key-modal";
 import { useToast } from "@/components/toast-provider";
-import { useGetApiKeysQuery, useDeleteApiKeyMutation, ApiKey } from "@/lib/store/api/apiSlice";
+import { useGetApiKeysQuery, useDeleteApiKeyMutation } from "@/lib/store/api/apiSlice";
 
 export function ApiKeysTable() {
   const [showKeyId, setShowKeyId] = useState<number | null>(null);
