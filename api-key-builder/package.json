@@ -14,9 +14,13 @@
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.4",
+    "@langchain/community": "^0.3.44",
+    "@langchain/core": "^0.3.57",
+    "@langchain/openai": "^0.5.11",
     "@radix-ui/react-dialog": "^1.0.5",
     "@radix-ui/react-toast": "^1.1.5",
     "@reduxjs/toolkit": "^2.8.2",
+    "langchain": "^0.3.27",
     "lucide-react": "^0.344.0",
     "next": "15.2.4",
     "react": "^18",
@@ -24,6 +28,9 @@
     "react-hook-form": "^7.50.1",
     "react-redux": "^9.2.0",
     "zod": "^3.22.4"
+  },
+  "resolutions": {
+    "@langchain/core": "^0.3.57"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
