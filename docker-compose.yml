@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  api:
+    build:
+      context: ./ApiKeyBuilder.Api
+      dockerfile: Dockerfile
+    ports:
+      - "5293:80"
+      - "5001:443"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:80
+      - ConnectionStrings__DefaultConnection=Host=host.docker.internal;Database=api_key_builder;Username=postgres;Password=Nos#01Duj
+    networks:
+      - app-network
+
+  ui:
+    build:
+      context: ./api-key-builder
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NEXT_PUBLIC_API_URL=http://api:80
+    depends_on:
+      - api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge 
