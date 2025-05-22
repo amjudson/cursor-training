@@ -6,27 +6,33 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import { useToast } from "@/components/toast-provider";
+import { useUpdateApiKeyMutation, useGetApiKeyQuery } from "@/lib/store/api/apiSlice";
 
 const editKeySchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name is too long"),
 });
+
 type EditKeyForm = z.infer<typeof editKeySchema>;
 
 interface EditKeyModalProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
-  onSuccess: () => void;
-  keyId: string;
+  keyId: number;
   initialName: string;
+  onSuccess: () => void;
 }
 
-export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName }: EditKeyModalProps) {
+export function EditKeyModal({ open, onOpenChange, keyId, initialName, onSuccess }: EditKeyModalProps) {
   const [isLoading, setIsLoading] = useState(false);
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<EditKeyForm>({
     resolver: zodResolver(editKeySchema),
-    defaultValues: { name: initialName },
+    defaultValues: {
+      name: initialName,
+    },
   });
   const toast = useToast();
+  const [updateApiKey] = useUpdateApiKeyMutation();
+  const { data: apiKey } = useGetApiKeyQuery(keyId);
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\s+/g, '-');
@@ -34,16 +40,14 @@ export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName
   };
 
   async function onSubmit(data: EditKeyForm) {
+    if (!apiKey) return;
+    
     setIsLoading(true);
     try {
-      const res = await fetch(`/api/keys/${keyId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        throw new Error("Failed to update API key");
-      }
+      await updateApiKey({
+        ...apiKey,
+        name: data.name,
+      }).unwrap();
       reset();
       onSuccess();
       onOpenChange(false);
@@ -71,7 +75,7 @@ export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName
                 type="text"
                 id="name"
                 data-testid="edit-key-name-input"
-                className="w-full px-3 py-2 border rounded-md bg-[#181C23] border-[#23272F] text-white"
+                className="w-full px-3 py-2 border rounded-md bg-[#181C23] border-[#23272F] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter a name for your API key"
                 disabled={isLoading}
                 onChange={handleNameChange}
@@ -84,7 +88,7 @@ export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-md"
+                className="px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-md transition-colors"
                 disabled={isLoading}
               >
                 Cancel
@@ -92,9 +96,9 @@ export function EditKeyModal({ open, onOpenChange, onSuccess, keyId, initialName
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50 transition-colors"
               >
-                {isLoading ? "Saving..." : "Save Changes"}
+                {isLoading ? "Updating..." : "Update Key"}
               </button>
             </div>
           </form>

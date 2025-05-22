@@ -6,10 +6,18 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import { useState } from "react";
 import { useToast } from "@/components/toast-provider";
+import { useCreateApiKeyMutation } from "@/lib/store/api/apiSlice";
+import crypto from "crypto";
 
 const createKeySchema = z.object({
   name: z.string().min(1, "Name is required").max(100, "Name is too long"),
+  key: z.string().default(''),
+  usages: z.number().default(0),
+  createdAt: z.date().default(new Date()),
+  lastUsed: z.date().default(new Date()),
+  isActive: z.boolean().default(true),
 });
+
 type CreateKeyForm = z.infer<typeof createKeySchema>;
 
 interface CreateKeyModalProps {
@@ -24,6 +32,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
     resolver: zodResolver(createKeySchema),
   });
   const toast = useToast();
+  const [createApiKey] = useCreateApiKeyMutation();
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\s+/g, '-');
@@ -31,16 +40,15 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
   };
 
   async function onSubmit(data: CreateKeyForm) {
+    console.log("Submitting API key creation with data:", data);
     setIsLoading(true);
+    data.key = `ak_${crypto.randomBytes(32).toString("hex")}`
+    data.createdAt = new Date();
+    data.lastUsed = new Date();
+    data.usages = 0;
+    data.isActive = true;
     try {
-      const res = await fetch("/api/keys", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(data),
-      });
-      if (!res.ok) {
-        throw new Error("Failed to create API key");
-      }
+      await createApiKey(data).unwrap();
       reset();
       onSuccess();
       onOpenChange(false);
@@ -68,7 +76,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
                 type="text"
                 id="name"
                 data-testid="create-key-name-input"
-                className="w-full px-3 py-2 border rounded-md bg-[#181C23] border-[#23272F] text-white"
+                className="w-full px-3 py-2 border rounded-md bg-[#181C23] border-[#23272F] text-white placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Enter a name for your API key"
                 disabled={isLoading}
                 onChange={handleNameChange}
@@ -81,7 +89,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
               <button
                 type="button"
                 onClick={() => onOpenChange(false)}
-                className="px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-md"
+                className="px-4 py-2 text-sm font-medium text-gray-300 hover:bg-gray-700 rounded-md transition-colors"
                 disabled={isLoading}
               >
                 Cancel
@@ -89,7 +97,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
               <button
                 type="submit"
                 disabled={isLoading}
-                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50"
+                className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50 transition-colors"
               >
                 {isLoading ? "Creating..." : "Create Key"}
               </button>
