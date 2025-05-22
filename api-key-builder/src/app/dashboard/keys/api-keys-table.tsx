@@ -101,7 +101,7 @@ export function ApiKeysTable() {
                   <td className="py-3 px-6">
                     <div className="flex items-center gap-2">
                       <span data-testid={`api-keys-key-value-${key.id}`} className="font-mono bg-[#23272F] px-2 py-1 rounded">
-                        {showKeyId === key.id ? key.key : "••••••••••••••••"}
+                        {showKeyId === key.id ? key.key : `${key.key.split('-')[0]}-••••••••••••••••`}
                       </span>
                       <button
                         data-testid={`api-keys-toggle-visibility-${key.id}`}
