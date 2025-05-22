@@ -1,16 +1,16 @@
-"use client";
+'use client'
 
-import * as Dialog from "@radix-ui/react-dialog";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-import { z } from "zod";
-import { useState } from "react";
-import { useToast } from "@/components/toast-provider";
-import { useUpdateApiKeyMutation, useGetApiKeyQuery } from "@/lib/store/api/apiSlice";
+import * as Dialog from '@radix-ui/react-dialog'
+import { useForm } from 'react-hook-form'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { z } from 'zod'
+import { useState } from 'react'
+import { useToast } from '@/components/toast-provider'
+import { useUpdateApiKeyMutation, useGetApiKeyQuery } from '@/lib/store/api/apiSlice'
 
 const editKeySchema = z.object({
-  name: z.string().min(1, "Name is required").max(100, "Name is too long"),
-});
+  name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
+})
 
 type EditKeyForm = z.infer<typeof editKeySchema>;
 
@@ -23,39 +23,39 @@ interface EditKeyModalProps {
 }
 
 export function EditKeyModal({ open, onOpenChange, keyId, initialName, onSuccess }: EditKeyModalProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false)
   const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<EditKeyForm>({
     resolver: zodResolver(editKeySchema),
     defaultValues: {
       name: initialName,
     },
-  });
-  const toast = useToast();
-  const [updateApiKey] = useUpdateApiKeyMutation();
-  const { data: apiKey } = useGetApiKeyQuery(keyId);
+  })
+  const toast = useToast()
+  const [updateApiKey] = useUpdateApiKeyMutation()
+  const { data: apiKey } = useGetApiKeyQuery(keyId)
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const value = e.target.value.replace(/\s+/g, '-');
-    setValue('name', value);
-  };
+    const value = e.target.value.replace(/\s+/g, '-')
+    setValue('name', value)
+  }
 
   async function onSubmit(data: EditKeyForm) {
-    if (!apiKey) return;
+    if (!apiKey) return
     
-    setIsLoading(true);
+    setIsLoading(true)
     try {
       await updateApiKey({
         ...apiKey,
         name: data.name,
-      }).unwrap();
-      reset();
-      onSuccess();
-      onOpenChange(false);
-      toast.show({ title: "API Key updated", variant: "success" });
+      }).unwrap()
+      reset()
+      onSuccess()
+      onOpenChange(false)
+      toast.show({ title: 'API Key updated', variant: 'success' })
     } catch {
-      toast.show({ title: "Failed to update API key", variant: "error" });
+      toast.show({ title: 'Failed to update API key', variant: 'error' })
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
   }
 
@@ -71,7 +71,7 @@ export function EditKeyModal({ open, onOpenChange, keyId, initialName, onSuccess
                 Key Name
               </label>
               <input
-                {...register("name")}
+                {...register('name')}
                 type="text"
                 id="name"
                 data-testid="edit-key-name-input"
@@ -98,12 +98,12 @@ export function EditKeyModal({ open, onOpenChange, keyId, initialName, onSuccess
                 disabled={isLoading}
                 className="px-4 py-2 text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md disabled:opacity-50 transition-colors"
               >
-                {isLoading ? "Updating..." : "Update Key"}
+                {isLoading ? 'Updating...' : 'Update Key'}
               </button>
             </div>
           </form>
         </Dialog.Content>
       </Dialog.Portal>
     </Dialog.Root>
-  );
+  )
 } 

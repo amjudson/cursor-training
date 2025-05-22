@@ -1,4 +1,4 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
+import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
 
 export interface ApiKey {
   id: number;
@@ -10,7 +10,7 @@ export interface ApiKey {
   isActive: boolean;
 }
 
-const controllerName = 'ApiKeys';
+const controllerName = 'ApiKeys'
 
 export const apiSlice = createApi({
   reducerPath: 'api',
@@ -18,7 +18,7 @@ export const apiSlice = createApi({
     baseUrl: 'http://localhost:5293/api',
     prepareHeaders: (headers) => {
       // Add any auth headers here if needed
-      return headers;
+      return headers
     },
   }),
   tagTypes: ['ApiKey'],
@@ -55,7 +55,7 @@ export const apiSlice = createApi({
       invalidatesTags: ['ApiKey'],
     }),
   }),
-});
+})
 
 export const {
   useGetApiKeysQuery,
@@ -63,4 +63,4 @@ export const {
   useCreateApiKeyMutation,
   useUpdateApiKeyMutation,
   useDeleteApiKeyMutation,
-} = apiSlice; 
+} = apiSlice 

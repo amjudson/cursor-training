@@ -1,42 +1,42 @@
-"use client";
+'use client'
 
-import { useState } from "react";
-import { Eye, EyeOff, Copy, Pencil, Trash2, KeyRound } from "lucide-react";
-import { CreateKeyModal } from "./create-key-modal";
-import { EditKeyModal } from "./edit-key-modal";
-import { useToast } from "@/components/toast-provider";
-import { useGetApiKeysQuery, useDeleteApiKeyMutation } from "@/lib/store/api/apiSlice";
+import { useState } from 'react'
+import { Eye, EyeOff, Copy, Pencil, Trash2, KeyRound } from 'lucide-react'
+import { CreateKeyModal } from './create-key-modal'
+import { EditKeyModal } from './edit-key-modal'
+import { useToast } from '@/components/toast-provider'
+import { useGetApiKeysQuery, useDeleteApiKeyMutation } from '@/lib/store/api/apiSlice'
 
 export function ApiKeysTable() {
-  const [showKeyId, setShowKeyId] = useState<number | null>(null);
-  const [copiedId, setCopiedId] = useState<number | null>(null);
-  const [deleteId, setDeleteId] = useState<number | null>(null);
-  const [isCreateOpen, setIsCreateOpen] = useState(false);
-  const [editKey, setEditKey] = useState<{ id: number; name: string } | null>(null);
-  const toast = useToast();
+  const [showKeyId, setShowKeyId] = useState<number | null>(null)
+  const [copiedId, setCopiedId] = useState<number | null>(null)
+  const [deleteId, setDeleteId] = useState<number | null>(null)
+  const [isCreateOpen, setIsCreateOpen] = useState(false)
+  const [editKey, setEditKey] = useState<{ id: number; name: string } | null>(null)
+  const toast = useToast()
 
-  const { data: apiKeys, isLoading, isError } = useGetApiKeysQuery();
-  const [deleteApiKey] = useDeleteApiKeyMutation();
+  const { data: apiKeys, isLoading, isError } = useGetApiKeysQuery()
+  const [deleteApiKey] = useDeleteApiKeyMutation()
 
   const handleDelete = async (id: number) => {
     try {
-      await deleteApiKey(id).unwrap();
-      setDeleteId(null);
-      toast.show({ title: "API Key deleted", variant: "success" });
+      await deleteApiKey(id).unwrap()
+      setDeleteId(null)
+      toast.show({ title: 'API Key deleted', variant: 'success' })
     } catch {
-      toast.show({ title: "Failed to delete API key", variant: "error" });
+      toast.show({ title: 'Failed to delete API key', variant: 'error' })
     }
-  };
+  }
 
   function handleCopy(key: string, id: number) {
-    navigator.clipboard.writeText(key);
-    setCopiedId(id);
-    setTimeout(() => setCopiedId(null), 1200);
-    toast.show({ title: "Copied API Key to clipboard", variant: "success" });
+    navigator.clipboard.writeText(key)
+    setCopiedId(id)
+    setTimeout(() => setCopiedId(null), 1200)
+    toast.show({ title: 'Copied API Key to clipboard', variant: 'success' })
   }
 
   if (isLoading) {
-    return <div data-testid="api-keys-loading-state" className="p-8 text-center text-gray-400">Loading...</div>;
+    return <div data-testid="api-keys-loading-state" className="p-8 text-center text-gray-400">Loading...</div>
   }
 
   if (!apiKeys || apiKeys.length === 0) {
@@ -53,17 +53,17 @@ export function ApiKeysTable() {
           </button>
         </div>
         <div className="p-8 text-center text-gray-400">
-          {isError ? "Failed to load API keys." : "No API keys found."}
+          {isError ? 'Failed to load API keys.' : 'No API keys found.'}
         </div>
         <CreateKeyModal
           open={isCreateOpen}
           onOpenChange={setIsCreateOpen}
           onSuccess={() => {
-            setIsCreateOpen(false);
+            setIsCreateOpen(false)
           }}
         />
       </div>
-    );
+    )
   }
 
   return (
@@ -107,14 +107,14 @@ export function ApiKeysTable() {
                         data-testid={`api-keys-toggle-visibility-${key.id}`}
                         onClick={() => setShowKeyId(showKeyId === key.id ? null : key.id)}
                         className="text-gray-400 hover:text-white"
-                        title={showKeyId === key.id ? "Hide" : "Show"}
+                        title={showKeyId === key.id ? 'Hide' : 'Show'}
                       >
                         {showKeyId === key.id ? <EyeOff size={16} /> : <Eye size={16} />}
                       </button>
                       <button
                         data-testid={`api-keys-copy-button-${key.id}`}
                         onClick={() => handleCopy(key.key, key.id)}
-                        className={`text-gray-400 hover:text-white ${copiedId === key.id ? "text-green-400" : ""}`}
+                        className={`text-gray-400 hover:text-white ${copiedId === key.id ? 'text-green-400' : ''}`}
                         title="Copy"
                       >
                         <Copy size={16} />
@@ -155,7 +155,7 @@ export function ApiKeysTable() {
         open={isCreateOpen}
         onOpenChange={setIsCreateOpen}
         onSuccess={() => {
-          setIsCreateOpen(false);
+          setIsCreateOpen(false)
         }}
       />
 
@@ -166,7 +166,7 @@ export function ApiKeysTable() {
           keyId={editKey.id}
           initialName={editKey.name}
           onSuccess={() => {
-            setEditKey(null);
+            setEditKey(null)
           }}
         />
       )}
@@ -196,5 +196,5 @@ export function ApiKeysTable() {
         </div>
       )}
     </div>
-  );
+  )
 } 
