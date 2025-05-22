@@ -1,3 +1,5 @@
+import { throwError } from './helperFunctions'
+
 interface GitHubReadmeResponse {
   content: string
   encoding: string
@@ -27,7 +29,7 @@ export async function getGitHubReadme(owner: string, repo: string): Promise<stri
     )
 
     if (!response.ok) {
-      throw new Error(`GitHub API responded with status: ${response.status}`)
+      throwError(`GitHub API responded with status: ${response.status}`)
     }
 
     const data = (await response.json()) as GitHubReadmeResponse
@@ -68,7 +70,7 @@ export async function getGitHubReadmeWithMetadata(owner: string, repo: string): 
     )
 
     if (!response.ok) {
-      throw new Error(`GitHub API responded with status: ${response.status}`)
+      throwError(`GitHub API responded with status: ${response.status}`)
     }
 
     const data = (await response.json()) as GitHubReadmeResponse
@@ -85,4 +87,4 @@ export async function getGitHubReadmeWithMetadata(owner: string, repo: string): 
     }
     throw new Error('Failed to fetch README: Unknown error')
   }
-} 
+}
