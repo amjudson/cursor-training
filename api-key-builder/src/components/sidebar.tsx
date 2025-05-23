@@ -1,7 +1,7 @@
 'use client'
 
 import Link from 'next/link'
-import { usePathname } from 'next/navigation'
+import { usePathname, useRouter } from 'next/navigation'
 import { ReactNode } from 'react'
 import Image from 'next/image'
 import {
@@ -16,7 +16,10 @@ import {
   ExternalLink,
   ChevronLeft,
   ChevronRight,
+  LogOut,
 } from 'lucide-react'
+import { useToast } from '@/components/toast-provider'
+import { useLogoutMutation } from '@/lib/store/api/authSlice'
 
 interface NavItem {
   label: string;
@@ -43,6 +46,28 @@ const navItems: NavItem[] = [
 
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const pathname = usePathname()
+  const router = useRouter()
+  const { show } = useToast()
+  const [logout] = useLogoutMutation()
+
+  const handleLogout = async () => {
+    try {
+      await logout().unwrap()
+      show({
+        title: 'Success',
+        description: 'Logged out successfully',
+        variant: 'success',
+      })
+      router.push('/')
+    } catch (error) {
+      show({
+        title: 'Error',
+        description: 'Failed to logout. Please try again.',
+        variant: 'error',
+      })
+    }
+  }
+
   return (
     <aside data-testid="sidebar-container" className={`h-screen bg-[#1A2233] border-r border-[#23272F] rounded-r-2xl flex flex-col pt-1 pb-6 shadow-lg transition-all duration-200 ${collapsed ? 'w-20 items-center px-0' : 'w-64 px-2'}`}>
       {/* Toggle button row at the very top, right justified */}
@@ -93,6 +118,16 @@ export function Sidebar({ collapsed, onToggle }: SidebarProps) {
           ))}
         </ul>
       </nav>
+      {/* Sign out button at the bottom */}
+      <div className="mt-auto px-2">
+        <button
+          onClick={handleLogout}
+          className={`flex items-center ${collapsed ? 'justify-center px-0' : 'gap-3 px-3'} py-2 w-full rounded-lg transition-colors text-sm font-medium text-gray-400 hover:bg-[#22262E] hover:text-white`}
+        >
+          <LogOut size={18} className={collapsed ? 'mx-auto' : ''} />
+          <span className={`transition-all duration-200 ${collapsed ? 'opacity-0 w-0' : 'opacity-100 w-auto'}`}>Sign out</span>
+        </button>
+      </div>
     </aside>
   )
 } 

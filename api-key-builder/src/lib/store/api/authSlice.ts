@@ -1,4 +1,5 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
+import Cookies from 'js-cookie'
 
 interface RegisterRequest {
   email: string
@@ -33,7 +34,7 @@ export const authApi = createApi({
   baseQuery: fetchBaseQuery({ 
     baseUrl: 'http://localhost:5293/api',
     prepareHeaders: (headers) => {
-      const token = localStorage.getItem('token')
+      const token = Cookies.get('token')
       if (token) {
         headers.set('authorization', `Bearer ${token}`)
       }
@@ -54,6 +55,30 @@ export const authApi = createApi({
         method: 'POST',
         body: credentials,
       }),
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          // Store token in cookie with 7 day expiry
+          Cookies.set('token', data.token, { expires: 7 })
+        } catch {
+          // Token will not be stored if login fails
+        }
+      },
+    }),
+    logout: builder.mutation<void, void>({
+      query: () => ({
+        url: 'Auth/logout',
+        method: 'POST',
+      }),
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          await queryFulfilled
+          Cookies.remove('token')
+        } catch {
+          // Still remove token even if the API call fails
+          Cookies.remove('token')
+        }
+      },
     }),
   }),
 })
@@ -61,4 +86,5 @@ export const authApi = createApi({
 export const {
   useRegisterMutation,
   useLoginMutation,
+  useLogoutMutation,
 } = authApi 

@@ -32,8 +32,7 @@ export function LoginForm() {
   const onSubmit = async (data: LoginForm) => {
     setIsLoading(true)
     try {
-      const result = await login(data).unwrap()
-      localStorage.setItem('token', result.token)
+      await login(data).unwrap()
       show({
         title: 'Success',
         description: 'Login successful!',
@@ -52,9 +51,9 @@ export function LoginForm() {
   }
 
   return (
-    <div className="w-full max-w-md space-y-8">
+    <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-lg shadow-lg">
       <div className="text-center">
-        <h2 className="text-3xl font-bold">Sign in to your account</h2>
+        <h2 className="text-3xl font-bold text-gray-900">Sign in to your account</h2>
         <p className="mt-2 text-sm text-gray-600">
           Don't have an account?{' '}
           <a href="/auth/register" className="text-blue-600 hover:text-blue-500">
@@ -73,7 +72,7 @@ export function LoginForm() {
               {...register('email')}
               type="email"
               id="email"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               disabled={isLoading}
             />
             {errors.email && (
@@ -89,7 +88,7 @@ export function LoginForm() {
               {...register('password')}
               type="password"
               id="password"
-              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
+              className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 text-gray-900 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-1 focus:ring-blue-500"
               disabled={isLoading}
             />
             {errors.password && (

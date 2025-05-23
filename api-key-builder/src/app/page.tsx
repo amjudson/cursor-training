@@ -14,52 +14,29 @@ export default function Home() {
           height={38}
           priority
         />
-        <ol data-testid="home-instructions" className="list-inside list-decimal text-sm/6 text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2 tracking-[-.01em]">
-            Get started by editing{' '}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-[family-name:var(--font-geist-mono)] font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li className="tracking-[-.01em]">
-            Save and see your changes instantly.
-          </li>
-        </ol>
-
+        
         <div data-testid="home-actions" className="flex gap-4 items-center flex-col sm:flex-row">
           <Link
-            data-testid="home-dashboard-link"
-            href="/dashboard"
+            data-testid="home-login-link"
+            href="/auth/login"
             className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto"
           >
-            Go to Dashboard
+            Sign In
           </Link>
-          <a
-            data-testid="home-deploy-link"
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:w-auto"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+          <Link
+            data-testid="home-register-link"
+            href="/auth/register"
+            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto"
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            data-testid="home-docs-link"
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 w-full sm:w-auto md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
+            Create Account
+          </Link>
+        </div>
+
+        <div className="mt-8 text-center sm:text-left">
+          <h2 className="text-2xl font-bold mb-4">Welcome to API Key Builder</h2>
+          <p className="text-gray-600 dark:text-gray-400 max-w-md">
+            A secure platform for managing and generating API keys. Sign in to access your dashboard or create a new account to get started.
+          </p>
         </div>
       </main>
       <footer data-testid="home-footer" className="row-start-3 flex gap-[24px] flex-wrap items-center justify-center">

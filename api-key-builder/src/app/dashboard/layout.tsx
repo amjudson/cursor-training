@@ -3,7 +3,11 @@
 import { Sidebar } from '@/components/sidebar'
 import { useState } from 'react'
 
-export default function DashboardLayout({ children }: { children: React.ReactNode }) {
+export default function DashboardLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false)
   return (
     <div data-testid="dashboard-layout-container" className="flex min-h-screen bg-[#15181E] text-white">
