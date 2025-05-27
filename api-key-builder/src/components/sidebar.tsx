@@ -17,6 +17,7 @@ import {
   ChevronLeft,
   ChevronRight,
   LogOut,
+  LayoutDashboard,
 } from 'lucide-react'
 import { useToast } from '@/components/toast-provider'
 import { useLogoutMutation } from '@/lib/store/api/authSlice'
@@ -34,6 +35,7 @@ interface SidebarProps {
 }
 
 const navItems: NavItem[] = [
+  { label: 'Home', href: '/', icon: <LayoutDashboard size={18} /> },
   { label: 'Overview', href: '/dashboard', icon: <Home size={18} /> },
   { label: 'API Keys', href: '/dashboard/keys', icon: <KeyRound size={18} /> },
   { label: 'API Playground', href: '/dashboard/playground', icon: <Code2 size={18} /> },
