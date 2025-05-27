@@ -11,6 +11,7 @@ import crypto from 'crypto'
 
 const createKeySchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
+  userId: z.string(),
   key: z.string().default(''),
   usages: z.number().default(0),
   createdAt: z.date().default(new Date()),
@@ -47,6 +48,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
     data.lastUsed = new Date()
     data.usages = 0
     data.isActive = true
+    data.userId = '' // Replace with actual user ID logic
     try {
       await createApiKey(data).unwrap()
       reset()

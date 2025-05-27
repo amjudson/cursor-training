@@ -1,12 +1,10 @@
 'use client'
 
-import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { z } from 'zod'
-import { useRouter } from 'next/navigation'
 import { useToast } from '@/components/toast-provider'
-import { useLoginMutation } from '@/lib/store/api/authSlice'
+import { useLogin } from '@/lib/hooks/useLogin'
 
 const loginSchema = z.object({
   email: z.string().email('Invalid email address'),
@@ -16,10 +14,8 @@ const loginSchema = z.object({
 type LoginForm = z.infer<typeof loginSchema>
 
 export function LoginForm() {
-  const [isLoading, setIsLoading] = useState(false)
-  const router = useRouter()
   const { show } = useToast()
-  const [login] = useLoginMutation()
+  const { login, isLoading } = useLogin()
 
   const {
     register,
@@ -30,23 +26,19 @@ export function LoginForm() {
   })
 
   const onSubmit = async (data: LoginForm) => {
-    setIsLoading(true)
     try {
-      await login(data).unwrap()
+      await login(data)
       show({
         title: 'Success',
         description: 'Login successful!',
         variant: 'success',
       })
-      router.push('/dashboard')
     } catch (error) {
       show({
         title: 'Error',
         description: 'Invalid email or password.',
         variant: 'error',
       })
-    } finally {
-      setIsLoading(false)
     }
   }
 
