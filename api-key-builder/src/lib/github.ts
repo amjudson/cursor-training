@@ -21,11 +21,8 @@ export async function getGitHubReadme(owner: string, repo: string): Promise<stri
       {
         headers: {
           'Accept': 'application/vnd.github.v3+json',
-          ...(process.env.GITHUB_TOKEN && {
-            'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-          }),
         },
-      }
+      },
     )
 
     if (!response.ok) {
@@ -62,9 +59,6 @@ export async function getGitHubReadmeWithMetadata(owner: string, repo: string): 
       {
         headers: {
           'Accept': 'application/vnd.github.v3+json',
-          ...(process.env.GITHUB_TOKEN && {
-            'Authorization': `Bearer ${process.env.GITHUB_TOKEN}`,
-          }),
         },
       }
     )

@@ -1,6 +1,6 @@
 import { User } from '@/lib/store/api/authSlice'
 
-const STORAGE_KEYS = {
+export const STORAGE_KEYS = {
   TOKEN: 'TOKEN',
   USER: 'USER',
 } as const
@@ -45,24 +45,24 @@ class SessionStorage {
   }
 
   public getToken(): string | null {
-    return this.getStoredItem<string>('TOKEN')
+    return this.getStoredItem<string>(STORAGE_KEYS.TOKEN)
   }
 
   public getUser(): User | null {
-    return this.getStoredItem<User>('USER')
+    return this.getStoredItem<User>(STORAGE_KEYS.USER)
   }
 
   public setToken(token: string): void {
-    this.setItem('TOKEN', token)
+    this.setItem(STORAGE_KEYS.TOKEN, token)
   }
 
   public setUser(user: User): void {
-    this.setItem('USER', user)
+    this.setItem(STORAGE_KEYS.USER, user)
   }
 
   public clear(): void {
-    this.removeItem('TOKEN')
-    this.removeItem('USER')
+    this.removeItem(STORAGE_KEYS.TOKEN)
+    this.removeItem(STORAGE_KEYS.USER)
   }
 }
 

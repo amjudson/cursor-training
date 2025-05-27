@@ -3,22 +3,48 @@
 import Image from 'next/image'
 import Link from 'next/link'
 import { useAuth } from '@/lib/hooks/useAuth'
+import { LogOut } from 'lucide-react'
+import {useLogin} from '@/lib/hooks/useLogin'
+import {useRouter} from 'next/navigation'
 
 export default function Home() {
-  const { isAuthenticated } = useAuth()
+  const router = useRouter()
+  const { isAuthenticated, setAuthenticated } = useAuth()
+
+  const {logout} = useLogin()
+
+  const handleLogout = () => {
+    logout()
+    setAuthenticated(false)
+    router.push('/')
+  }
+
+  console.log('Authenticated:', isAuthenticated)
 
   return (
     <div data-testid="home-container" className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
       <main data-testid="home-main" className="flex flex-col gap-[32px] row-start-2 items-center sm:items-start">
-        <Image
-          data-testid="home-logo"
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
+        <div className="flex justify-between items-center w-full">
+          <Image
+            data-testid="home-logo"
+            className="dark:invert"
+            src="/next.svg"
+            alt="Next.js logo"
+            width={180}
+            height={38}
+            priority
+          />
+          {isAuthenticated && (
+            <button
+              data-testid="home-logout-button"
+              onClick={handleLogout}
+              className="flex items-center gap-2 rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
+            >
+              <LogOut size={18} />
+              Sign Out
+            </button>
+          )}
+        </div>
         
         <div data-testid="home-actions" className="flex gap-4 items-center flex-col sm:flex-row">
           {isAuthenticated ? (
