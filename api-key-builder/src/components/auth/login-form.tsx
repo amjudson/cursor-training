@@ -33,7 +33,7 @@ export function LoginForm() {
         description: 'Login successful!',
         variant: 'success',
       })
-    } catch (error) {
+    } catch {
       show({
         title: 'Error',
         description: 'Invalid email or password.',
@@ -47,7 +47,7 @@ export function LoginForm() {
       <div className="text-center">
         <h2 className="text-3xl font-bold text-gray-900">Sign in to your account</h2>
         <p className="mt-2 text-sm text-gray-600">
-          Don't have an account?{' '}
+          Don&#39;t have an account?{' '}
           <a href="/auth/register" className="text-blue-600 hover:text-blue-500">
             Sign up
           </a>

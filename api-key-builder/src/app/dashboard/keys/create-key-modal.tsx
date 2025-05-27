@@ -8,6 +8,7 @@ import { useState } from 'react'
 import { useToast } from '@/components/toast-provider'
 import { useCreateApiKeyMutation } from '@/lib/store/api/apiSlice'
 import crypto from 'crypto'
+import {useAuth} from '@/lib/hooks/useAuth'
 
 const createKeySchema = z.object({
   name: z.string().min(1, 'Name is required').max(100, 'Name is too long'),
@@ -34,6 +35,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
   })
   const toast = useToast()
   const [createApiKey] = useCreateApiKeyMutation()
+  const user = useAuth()
 
   const handleNameChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.replace(/\s+/g, '-')
@@ -48,7 +50,7 @@ export function CreateKeyModal({ open, onOpenChange, onSuccess }: CreateKeyModal
     data.lastUsed = new Date()
     data.usages = 0
     data.isActive = true
-    data.userId = '' // Replace with actual user ID logic
+    data.userId = user.user?.id || '' // Replace with actual user ID logic
     try {
       await createApiKey(data).unwrap()
       reset()

@@ -3,6 +3,7 @@
 import { useRouter } from 'next/navigation'
 import { useLoginMutation } from '@/lib/store/api/authSlice'
 import { LoginRequest } from '@/lib/store/api/authSlice'
+import {sessionStorage} from '@/lib/storage/session'
 
 export function useLogin() {
   const router = useRouter()
@@ -19,7 +20,12 @@ export function useLogin() {
     }
   }
 
+  const handleLogout = () => {
+    sessionStorage.clear()
+  }
+
   return {
+    logout: handleLogout,
     login: handleLogin,
     isLoading,
     error,

@@ -18,9 +18,10 @@ import {
   ChevronRight,
   LogOut,
   LayoutDashboard,
+  FileText,
 } from 'lucide-react'
-import { useToast } from '@/components/toast-provider'
-import { useLogoutMutation } from '@/lib/store/api/authSlice'
+import {useAuth} from '@/lib/hooks/useAuth'
+import {useLogin} from '@/lib/hooks/useLogin'
 
 interface NavItem {
   label: string;
@@ -40,6 +41,7 @@ const navItems: NavItem[] = [
   { label: 'API Keys', href: '/dashboard/keys', icon: <KeyRound size={18} /> },
   { label: 'API Playground', href: '/dashboard/playground', icon: <Code2 size={18} /> },
   { label: 'Use Cases', href: '/dashboard/use-cases', icon: <Sparkles size={18} /> },
+  { label: 'GitHub README', href: '/github-readme', icon: <FileText size={18} /> },
   { label: 'Billing', href: '/dashboard/billing', icon: <CreditCard size={18} /> },
   { label: 'Settings', href: '/dashboard/settings', icon: <Settings size={18} /> },
   { label: 'Documentation', href: 'https://docs.aplus.com', icon: <BookOpen size={18} />, external: true },
@@ -49,25 +51,13 @@ const navItems: NavItem[] = [
 export function Sidebar({ collapsed, onToggle }: SidebarProps) {
   const pathname = usePathname()
   const router = useRouter()
-  const { show } = useToast()
-  const [logout] = useLogoutMutation()
+  const {setAuthenticated} = useAuth()
+  const {logout} = useLogin()
 
   const handleLogout = async () => {
-    try {
-      await logout().unwrap()
-      show({
-        title: 'Success',
-        description: 'Logged out successfully',
-        variant: 'success',
-      })
-      router.push('/')
-    } catch (error) {
-      show({
-        title: 'Error',
-        description: 'Failed to logout. Please try again.',
-        variant: 'error',
-      })
-    }
+    logout()
+    setAuthenticated(false)
+    router.push('/')
   }
 
   return (
