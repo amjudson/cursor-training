@@ -1,46 +1,84 @@
-import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react'
-import Cookies from 'js-cookie'
+import { createApi, fetchBaseQuery, BaseQueryApi } from '@reduxjs/toolkit/query/react'
+import { sessionStorage } from '@/lib/storage/session'
+import { redirect } from 'next/navigation'
 
-interface RegisterRequest {
+export interface RegisterRequest {
   email: string
   password: string
   firstName: string
   lastName: string
 }
 
-interface RegisterResponse {
+export interface RegisterResponse {
   message: string
 }
 
-interface LoginRequest {
+export interface LoginRequest {
   email: string
   password: string
 }
 
-interface User {
+export interface User {
   id: string
   email: string
   firstName: string
   lastName: string
 }
 
-interface LoginResponse {
+export interface LoginResponse {
   token: string
   user: User
 }
 
+export interface RefreshTokenResponse {
+  token: string
+}
+
+const baseQuery = fetchBaseQuery({ 
+  baseUrl: 'http://localhost:5293/api',
+  prepareHeaders: (headers) => {
+    const token = sessionStorage.getToken()
+    if (token) {
+      headers.set('authorization', `Bearer ${token}`)
+    }
+    return headers
+  },
+})
+
+const baseQueryWithReauth = async (
+  args: string | { url: string; method: string; body?: unknown },
+  api: BaseQueryApi,
+  extraOptions: { signal?: AbortSignal }
+) => {
+  let result = await baseQuery(args, api, extraOptions)
+
+  if (result.error?.status === 401) {
+    // Try to get a new token
+    const refreshResult = await baseQuery(
+      { url: 'Auth/refresh-token', method: 'POST' },
+      api,
+      extraOptions
+    )
+
+    if (refreshResult.data) {
+      // Store the new token
+      const { token } = refreshResult.data as RefreshTokenResponse
+      sessionStorage.setToken(token)
+
+      // Retry the original query
+      result = await baseQuery(args, api, extraOptions)
+    } else {
+      // If refresh fails, clear the session
+      sessionStorage.clear()
+    }
+  }
+
+  return result
+}
+
 export const authApi = createApi({
   reducerPath: 'authApi',
-  baseQuery: fetchBaseQuery({ 
-    baseUrl: 'http://localhost:5293/api',
-    prepareHeaders: (headers) => {
-      const token = Cookies.get('token')
-      if (token) {
-        headers.set('authorization', `Bearer ${token}`)
-      }
-      return headers
-    },
-  }),
+  baseQuery: baseQueryWithReauth,
   endpoints: (builder) => ({
     register: builder.mutation<RegisterResponse, RegisterRequest>({
       query: (credentials) => ({
@@ -58,10 +96,12 @@ export const authApi = createApi({
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           const { data } = await queryFulfilled
-          // Store token in cookie with 7 day expiry
-          Cookies.set('token', data.token, { expires: 7 })
+          sessionStorage.setToken(data.token)
+          sessionStorage.setUser(data.user)
+          // Redirect to home page after successful login
+          redirect('/')
         } catch {
-          // Token will not be stored if login fails
+          // Data will not be stored if login fails
         }
       },
     }),
@@ -73,10 +113,24 @@ export const authApi = createApi({
       async onQueryStarted(_, { queryFulfilled }) {
         try {
           await queryFulfilled
-          Cookies.remove('token')
+          sessionStorage.clear()
         } catch {
-          // Still remove token even if the API call fails
-          Cookies.remove('token')
+          // Still clear data even if the API call fails
+          sessionStorage.clear()
+        }
+      },
+    }),
+    refreshToken: builder.mutation<RefreshTokenResponse, void>({
+      query: () => ({
+        url: 'Auth/refresh-token',
+        method: 'POST',
+      }),
+      async onQueryStarted(_, { queryFulfilled }) {
+        try {
+          const { data } = await queryFulfilled
+          sessionStorage.setToken(data.token)
+        } catch {
+          sessionStorage.clear()
         }
       },
     }),
@@ -87,4 +141,4 @@ export const {
   useRegisterMutation,
   useLoginMutation,
   useLogoutMutation,
-} = authApi 
+} = authApi
