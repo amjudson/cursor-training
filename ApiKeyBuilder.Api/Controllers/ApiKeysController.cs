@@ -10,9 +10,9 @@ namespace ApiKeyBuilder.Api.Controllers;
 [Route("api/[controller]")]
 public class ApiKeysController : ControllerBase
 {
-    private readonly ApiKeyBuilderContext context;
+    private readonly ApplicationDbContext context;
 
-    public ApiKeysController(ApiKeyBuilderContext context)
+    public ApiKeysController(ApplicationDbContext context)
     {
         this.context = context;
     }
